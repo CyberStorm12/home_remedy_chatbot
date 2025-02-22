@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Home Remedy Chatbot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+      }
+      .chat-container {
+        width: 50%;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+      .chat-box {
+        height: 300px;
+        overflow-y: scroll;
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+      input {
+        width: 70%;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      button {
+        padding: 10px;
+        cursor: pointer;
+      }
+    </style>
+    <script>
+      async function sendMessage() {
+        let userMessage = document.getElementById("userInput").value;
+        if (userMessage.trim() === "") return;
+
+        let chatBox = document.getElementById("chatbox");
+        chatBox.innerHTML += `<p><b>You:</b> ${userMessage}</p>`;
+        document.getElementById("userInput").value = "";
+
+        let response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage }),
+        });
+        let data = await response.json();
+        chatBox.innerHTML += `<p><b>Bot:</b> ${data.response}</p>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Home Remedy Chatbot</h2>
+    <div class="chat-container">
+      <div id="chatbox" class="chat-box"></div>
+      <input type="text" id="userInput" placeholder="Ask me anything..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </body>
+</html>
